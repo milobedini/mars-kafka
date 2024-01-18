@@ -1,4 +1,10 @@
-import { Coordinates, Heading, execute } from '.'
+import { Coordinates, Heading, Rover, execute } from '.'
+
+const start = () => [1, 1]
+const rover = (heading: Heading, position?: Coordinates): Rover => ({
+  heading,
+  position: position || (start() as Coordinates),
+})
 
 test.each`
   original | expected | direction
@@ -13,58 +19,28 @@ test.each`
 `(
   'When facing $original, turning $direction should cause us to face $expected',
   ({ original, expected, direction }) => {
-    const initialState = {
-      heading: original,
-      position: [1, 1] as Coordinates,
-    }
-    expect(execute(direction, initialState)).toEqual({
-      ...initialState,
-      heading: expected,
-    })
+    expect(execute(direction, rover(original))).toEqual(rover(expected))
   }
 )
 
 // Stage 2
 test('When moving N, we should increment Y by 1', () => {
-  const initialState = {
-    heading: 'N' as Heading,
-    position: [1, 1] as Coordinates,
-  }
-  expect(execute('M', initialState)).toEqual({
-    ...initialState,
-    position: [1, 2],
-  })
+  expect(execute('M', rover('N'))).toEqual(rover('N', [1, 2]))
 })
 
 test('When moving E, we should increment X by 1', () => {
-  const initialState = {
-    heading: 'E' as Heading,
-    position: [1, 1] as Coordinates,
-  }
-  expect(execute('M', initialState)).toEqual({
-    ...initialState,
-    position: [2, 1],
-  })
+  expect(execute('M', rover('E'))).toEqual(rover('E', [2, 1]))
 })
 
 test('When moving S, we should decrease Y by 1', () => {
-  const initialState = {
-    heading: 'S' as Heading,
-    position: [1, 1] as Coordinates,
-  }
-  expect(execute('M', initialState)).toEqual({
-    ...initialState,
-    position: [1, 0],
-  })
+  expect(execute('M', rover('S'))).toEqual(rover('S', [1, 0]))
 })
 
 test('When moving W, we should decrease X by 1', () => {
-  const initialState = {
-    heading: 'W' as Heading,
-    position: [1, 1] as Coordinates,
-  }
-  expect(execute('M', initialState)).toEqual({
-    ...initialState,
-    position: [0, 1],
-  })
+  expect(execute('M', rover('W'))).toEqual(rover('W', [0, 1]))
+})
+
+// First example in kafka.
+test('When executing multiple commands', () => {
+  expect(execute('LMLMLMLMM', rover('N', [1, 2]))).toEqual(rover('N', [1, 3]))
 })
