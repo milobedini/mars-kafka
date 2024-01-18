@@ -32,17 +32,12 @@ const move = (rover: Rover): Rover => ({
   position: getNextPosition(rover.heading, rover.position) as Coordinates,
 })
 
-export const apply = (command: string, state: Rover): Rover => {
+export const apply = (state: Rover, command: string): Rover => {
   if (command === 'L') return turnLeft(state)
   if (command === 'R') return turnRight(state)
   if (command === 'M') return move(state)
   return state
 }
 
-export const execute = (commands: string, state: Rover) => {
-  let result = state
-  for (const cmd of commands.split('')) {
-    result = apply(cmd, result)
-  }
-  return result
-}
+export const execute = (commands: string, state: Rover) =>
+  commands.split('').reduce(apply, state)

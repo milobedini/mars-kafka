@@ -44,3 +44,7 @@ test('When moving W, we should decrease X by 1', () => {
 test('When executing multiple commands', () => {
   expect(execute('LMLMLMLMM', rover('N', [1, 2]))).toEqual(rover('N', [1, 3]))
 })
+// Second example in kafka.
+test('When executing multiple commands', () => {
+  expect(execute('MMRMMRMRRM', rover('E', [3, 3]))).toEqual(rover('E', [5, 1]))
+})
